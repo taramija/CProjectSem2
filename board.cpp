@@ -1,5 +1,8 @@
 #include "board.h"
 #include <iostream>
+#include <ctime>    //some comment
+#include <stdlib.h>
+#include <QDebug>
 using namespace std;
 
 //Tile function
@@ -39,15 +42,14 @@ bool Tile :: event(QEvent *myEvent){
 void Tile  :: slotLeftClick(){   // Implementation of Slot which will consume signal
     qDebug() << "Left clicked!";
     if(hasBomb){
-
+        this->updateStatus(2);
     }
 }
 
 void Tile  :: slotRightClick(){   // Implementation of Slot which will consume signal
     qDebug() << "Right clicked!";
-    if(hasFlag){
-
-    }
+    if(hasFlag){this->updateStatus(6);return;}  //set flag
+    if(!hasFlag){this->updateStatus(5);return;} //unset flag
 }
 
 //Board function
@@ -66,11 +68,21 @@ bool board::setUpBoard(){
     }
 }
 
+//Initialize random bombs based on a given number
 bool board::setUpBomb(int numOfBomb){
-    for(int i = 0; i < row; ++i){
-        for(int j = 0; j < col; ++j){
+    for(int i = 0; i < numOfBomb; ++i){
+        int randomPosX, randomPosY;
 
+        srand( time(0));
+        randomPosX = rand() % row; // Random row position
+        randomPosY = rand() % col; // Random col position
+
+        if(!tileSet[randomPosX][randomPosY].hasBomb){
+            tileSet[randomPosX][randomPosY].setBomb(true);
+        }else{
+            --i;
         }
+
     }
 }
 
