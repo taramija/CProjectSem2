@@ -37,21 +37,6 @@ class Tile : public QLabel
     signals:
         void leftClick();       // left click signal
 
-//    public slots:
-//        void slotLeftClick();    // will listen to left click signal
-//        void slotRightClick();    // will listen to right click signal
-
-
-//        void QkFriendsListView::mousePressEvent(QMouseEvent *event)
-//        {
-//            if(event->button() == Qt::RightButton)
-//            {
-//                emit customContextMenuRequested(event->pos());
-//            }
-//            else
-//                QListView::mousePressEvent(event)
-//        }
-
     protected:
         int size;
         bool hasBomb;

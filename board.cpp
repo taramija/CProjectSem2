@@ -7,10 +7,6 @@
 using namespace std;
 
 //Tile function
-//Tile::Tile(QWidget* parent) : QLabel(parent) {
-//    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
-//}
-
 void Tile :: updateStatus(int statusCode){  //add picture using pixmap to the tile
     switch(statusCode){ //according to it's particular status
         case(1):{currentState = bomb;break;}
@@ -49,6 +45,9 @@ void Tile::mouseEvent(QMouseEvent* e){ // Assign action for mouse click events
 }
 
 
+//Tile::Tile(QWidget* parent) : QLabel(parent) {
+//    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
+//}
 //bool Tile :: event(QEvent *myEvent){
 //    switch(myEvent->type()){
 //        case(QEvent :: MouseButtonRelease):{   // Left click event
