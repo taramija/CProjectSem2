@@ -1,3 +1,4 @@
+#include <QObject>
 #include <QLabel>
 
 #ifndef BOARD_H
@@ -7,74 +8,86 @@
 //Class Tile
 class Tile : public QLabel
 {
-
+    Q_OBJECT
 
     public:
         //constructor
-        Tile(char currentState = unchecked);
+        Tile(){
+            currentState = unchecked;
+//            this->setMouseTracking(true);
+        }
 
         //destructor
-        ~Tile();
+        ~Tile(){}
 
         //mutators
         void setBomb(bool status){ hasBomb = status; }
+        void setTriggerState(bool status){ bombTriggered = status; }
 
         //accessors
         bool checkBomb() const { return hasBomb; }
+        bool checkFlag() const { return hasFlag; }
+        bool checkBombTrigger() const { return bombTriggered; }
 
         //functions
-        void triggerFlag(){
-            if(hasFlag){
-                hasFlag = false;
-                return;
-            }else{
-                hasFlag = true;
-                return;
-            }
-        }
-        void updateStatus(int);
+        void updateStatus(int);     //change the image of the tile base on list of code below
+        void mouseEvent(QMouseEvent* e);
 
     signals:
-        void leftClick();       // Signal to emit
-        void rightClick();       // Signal to emit
+        void leftClick();       // left click signal
 
-    public slots:
-        void slotLeftClick();    // Slot which will consume signal
-        void slotRightClick();    // Slot which will consume signal
+//    public slots:
+//        void slotLeftClick();    // will listen to left click signal
+//        void slotRightClick();    // will listen to right click signal
 
+
+//        void QkFriendsListView::mousePressEvent(QMouseEvent *event)
+//        {
+//            if(event->button() == Qt::RightButton)
+//            {
+//                emit customContextMenuRequested(event->pos());
+//            }
+//            else
+//                QListView::mousePressEvent(event)
+//        }
 
     protected:
         bool hasBomb;
         bool hasFlag;
-        bool event(QEvent *myEvent);
+        bool bombTriggered;
+        bool event(QEvent *myEvent);    //mouse handler function
 
-        char bomb = "D://CProject/MineSweeper/images/bomb.png";             //code 1
-        char boom = "D://CProject/MineSweeper/images/boom.png";             //code 2
-        char checked = "D://CProject/MineSweeper/images/checked.png";       //code 3
-        char failed = "D://CProject/MineSweeper/images/failed.png";         //code 4
-        char flag = "D://CProject/MineSweeper/images/flag.png";             //code 5
-        char unchecked = "D://CProject/MineSweeper/images/unchecked.png";   //code 6
+        //declare preset images link for different case
+        const char *bomb = "D://CProject/MineSweeper/images/bomb.png";             //code 1
+        const char *boom = "D://CProject/MineSweeper/images/boom.png";             //code 2
+        const char *checked = "D://CProject/MineSweeper/images/checked.png";       //code 3
+        const char *failed = "D://CProject/MineSweeper/images/failed.png";         //code 4
+        const char *flag = "D://CProject/MineSweeper/images/flag.png";             //code 5
+        const char *unchecked = "D://CProject/MineSweeper/images/unchecked.png";   //code 6
 
-        char currentState;
+        const char *currentState;  //will be set one of the state above
 };
 
 //Class Board
-    class board
+    class Board : public QObject
     {
+        Q_OBJECT
+
         public:
             //constructor
-            board();
-            board(int row, int col){
+            Board();
+            Board(int row, int col, int tileSize = 10){
                 row = row;
                 col = col;
+                tileSize = tileSize;
             }
 
             //destructor
-            ~board();
+            ~Board(){}
 
             //mutators
-            bool setRow(int row){ row = row; }
-            bool setCol(int col){ row = col; }
+            void setRow(int row){ row = row; }
+            void setCol(int col){ row = col; }
 
             //accessors
             int getRow() const { return row; }
@@ -86,9 +99,12 @@ class Tile : public QLabel
 
             bool checkTile(int, int);
 
+        public slots:
+            void slotTileClick();    // will listen to Tile's left click signal
 
         protected:
             int row, col;
+            int tileSize;
             Tile** tileSet;
 
     };

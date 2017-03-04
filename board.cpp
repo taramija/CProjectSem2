@@ -3,13 +3,13 @@
 #include <ctime>    //some comment
 #include <stdlib.h>
 #include <QDebug>
+#include <QMouseEvent>
 using namespace std;
 
 //Tile function
-Tile::Tile(QWidget* parent) : QLabel(parent) {
-    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClicked()));
-    connect(this, SIGNAL(rightClick()), this, SLOT(slotTileClicked()));
-}
+//Tile::Tile(QWidget* parent) : QLabel(parent) {
+//    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
+//}
 
 void Tile :: updateStatus(int statusCode){
     switch(statusCode){
@@ -23,66 +23,144 @@ void Tile :: updateStatus(int statusCode){
     this->setPixmap(QPixmap(currentState).scaled(5,5,Qt::KeepAspectRatio));
 }
 
-bool Tile :: event(QEvent *myEvent){
-    switch(myEvent->type()){
-        case(QEvent :: MouseButtonRelease):{   // Left click event
-            qDebug() << "Left Mouse Event";
+void Tile::mouseEvent(QMouseEvent* e){ // Assign action for mouse click events
+
+    if(e->button() == Qt::RightButton){ // Right click event: trigger the flag
+
+        qDebug() << "Right clicked!";
+
+        // update the picture to code 6 if the flag is already on
+        if(hasFlag){this->updateStatus(6);hasFlag=false;return;} //code 6 "unchecked"
+
+        // update the picture to code 5 if the flag is not on
+        if(!hasFlag){this->updateStatus(5);hasFlag=true;return;} //code 5 "flag"
+
+    }else if(e->button() == Qt::LeftButton){ // Left click event
+
+        if(!this->hasBomb){
+            qDebug() << "Left clicked no Bomb!";
+            this->updateStatus(3);
+
+        }else{
+            this->setTriggerState(true);
             emit leftClick();
-            break;
         }
-        case(QEvent :: MouseButtonRelease):{   // Right click event
-            qDebug() << "Right Mouse Event";
-            emit rightClick();
-            break;
-        }
-    }
-    return QWidget::event(myEvent);
-}
-
-void Tile  :: slotLeftClick(){   // Implementation of Slot which will consume signal
-    qDebug() << "Left clicked!";
-    if(hasBomb){
-        this->updateStatus(2);
     }
 }
 
-void Tile  :: slotRightClick(){   // Implementation of Slot which will consume signal
-    qDebug() << "Right clicked!";
-    if(hasFlag){this->updateStatus(6);return;}  //set flag
-    if(!hasFlag){this->updateStatus(5);return;} //unset flag
-}
+
+//bool Tile :: event(QEvent *myEvent){
+//    switch(myEvent->type()){
+//        case(QEvent :: MouseButtonRelease):{   // Left click event
+//            qDebug() << "Left Mouse Event";
+//            emit leftClick();
+//            break;
+//        }
+//        case(QEvent :: MouseButtonRelease):{   // Right click event
+//            qDebug() << "Right Mouse Event";
+//            emit rightClick();
+//            break;
+//        }
+//    }
+//    return QWidget::event(myEvent);
+//}
+
+//void Tile  :: slotLeftClick(){   // Implementation of Slot which will consume signal
+//    qDebug() << "Left clicked!";
+//    if(hasBomb){
+//        this->updateStatus(2);
+//    }
+//}
+
+//void Tile  :: slotRightClick(){   // Implementation of Slot which will consume signal
+//    qDebug() << "Right clicked!";
+//    if(hasFlag){this->updateStatus(6);hasFlag=false;return;}  //set flag
+//    if(!hasFlag){this->updateStatus(5);hasFlag=true;return;} //unset flag
+//}
 
 //Board function
-bool board::setUpBoard(){
-    tileSet = new Tile*[row];
+bool Board::setUpBoard(){
 
-    for(int i = 0; i < row; ++i){
-        tileSet[i] = new Tile[col];
-    }
+    //create 2d array made of Tiles
+    tileSet = new Tile*[row];   //ini first dimension for the array
 
-    //set default status interface for the whole board (code 6)
-    for(int j = 0; i < row; ++i){
-        for(int k = 0; k < col; ++i){
-            tileSet[j][k].updateStatus(6);
+    for(int i = 0; i < row; ++i)
+        tileSet[i] = new Tile[col];  //conduct 2nd dimension
+
+
+//    delete array
+//    for(int i = 0; i < sizeY; ++i) {
+//        delete [] ary[i];
+//    }
+//    delete [] ary;
+
+    for(int j = 0; j < row; ++j){
+        for(int k = 0; k < col; ++k){
+
+            //set default image interface for the whole board (code 6)
+            tileSet[j][k].updateStatus(6); //code 6: "unchecked"
+
+            //set position of each tile that form a 2d grid board
+            //each tile position will increase by the size of 1 tile for every iteration
+            tileSet[j][k].setGeometry(tileSize+tileSize*j,  //move the next tile horizontally
+                                      tileSize+tileSize*k,  //move the next tile vertically
+                                      tileSize,tileSize);   //indicate the size of the tile
         }
     }
+
+    return true;
 }
 
 //Initialize random bombs based on a given number
-bool board::setUpBomb(int numOfBomb){
-    for(int i = 0; i < numOfBomb; ++i){
+bool Board::setUpBomb(int numOfBomb){
+
+    for(int i = 0; i < numOfBomb; ++i){ //allocate position for each bomb
+
         int randomPosX, randomPosY;
 
         srand( time(0));
         randomPosX = rand() % row; // Random row position
         randomPosY = rand() % col; // Random col position
 
-        if(!tileSet[randomPosX][randomPosY].hasBomb){
+        if(!tileSet[randomPosX][randomPosY].checkBomb()){   //check if this position is occupied
             tileSet[randomPosX][randomPosY].setBomb(true);
         }else{
-            --i;
+            --i;    //redo the iteration if the random position is occupied
         }
 
     }
+
+    return true;
+}
+
+//respond to Tile left click by listening to leftClick() signal
+//reveal everything after the player lose the game
+void Board::slotTileClick(){
+    qDebug() << "left click Bomb triggered!";
+
+    //loop through the whole board to update the
+    //picture according to the state of the tile
+    for(int i = 0; i < row; ++i){
+        for(int j = 0; j < col; ++j){
+            Tile *currentTile = &tileSet[i][j];
+
+            if(currentTile->checkBomb()){
+                if(currentTile->checkBombTrigger())  //if this is the bomb the player triggered
+                    currentTile->updateStatus(2);   //reveal it with red background picture
+                else{
+                    if(currentTile->checkFlag())    //if not, check the flag
+                        //if the flag was on, mark it with "failed" sign
+                        currentTile->updateStatus(4);
+                    else
+                        //if no flag, reveal the tile with normal bomb picture
+                        currentTile->updateStatus(1);
+                }
+            }
+
+            //keep the picture of every tiles left that has no flag, no bomb, no revelation
+
+        }
+    }
+
 }
 
