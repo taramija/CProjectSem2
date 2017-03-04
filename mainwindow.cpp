@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    imageLabel->setPixmap(QPixmap::fromImage(image));
 
     Board board(10,10);
-//    board.setUpBoard();
+    board.setUpBoard();
 //    board.setUpBomb(10);
 
 //    for(int i=0; i<board.getRow(); ++i){

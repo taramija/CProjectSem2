@@ -21,6 +21,7 @@ class Tile : public QLabel
         ~Tile(){}
 
         //mutators
+        void setSize(int size){ size = size; }
         void setBomb(bool status){ hasBomb = status; }
         void setTriggerState(bool status){ bombTriggered = status; }
 
@@ -52,10 +53,11 @@ class Tile : public QLabel
 //        }
 
     protected:
+        int size;
         bool hasBomb;
         bool hasFlag;
         bool bombTriggered;
-        bool event(QEvent *myEvent);    //mouse handler function
+//        bool event(QEvent *myEvent);    //mouse handler function
 
         //declare preset images link for different case
         const char *bomb = "D://CProject/MineSweeper/images/bomb.png";             //code 1
@@ -94,18 +96,17 @@ class Tile : public QLabel
             int getCol() const { return col; }
 
             //functions
-            bool setUpBoard();
-            bool setUpBomb(int);
-
-            bool checkTile(int, int);
+            bool setUpBoard();  //create array of labels and fill them with default picture
+            bool setUpBomb(int); //randomly allocate the bomb based on a given number
+//            bool checkTile(int, int);
 
         public slots:
-            void slotTileClick();    // will listen to Tile's left click signal
+            void slotTileClick();    // the board listen to Tile's left click signal
 
         protected:
             int row, col;
             int tileSize;
-            Tile** tileSet;
+            Tile** tileSet; //variable to store tiles of the board
 
     };
 

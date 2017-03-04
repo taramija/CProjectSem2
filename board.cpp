@@ -11,8 +11,8 @@ using namespace std;
 //    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
 //}
 
-void Tile :: updateStatus(int statusCode){
-    switch(statusCode){
+void Tile :: updateStatus(int statusCode){  //add picture using pixmap to the tile
+    switch(statusCode){ //according to it's particular status
         case(1):{currentState = bomb;break;}
         case(2):{currentState = boom;break;}
         case(3):{currentState = checked;break;}
@@ -20,7 +20,7 @@ void Tile :: updateStatus(int statusCode){
         case(5):{currentState = flag;break; }
         case(6):{currentState = unchecked; break;}
     }
-    this->setPixmap(QPixmap(currentState).scaled(5,5,Qt::KeepAspectRatio));
+    this->setPixmap(QPixmap(currentState).scaled(size,size,Qt::KeepAspectRatio));
 }
 
 void Tile::mouseEvent(QMouseEvent* e){ // Assign action for mouse click events
@@ -82,31 +82,36 @@ void Tile::mouseEvent(QMouseEvent* e){ // Assign action for mouse click events
 bool Board::setUpBoard(){
 
     //create 2d array made of Tiles
-    tileSet = new Tile*[row];   //ini first dimension for the array
+    tileSet = new Tile *[row];   //ini first dimension for the array
 
     for(int i = 0; i < row; ++i)
         tileSet[i] = new Tile[col];  //conduct 2nd dimension
 
-
-//    delete array
-//    for(int i = 0; i < sizeY; ++i) {
-//        delete [] ary[i];
-//    }
-//    delete [] ary;
-
     for(int j = 0; j < row; ++j){
         for(int k = 0; k < col; ++k){
+            //use pointer to locate the current tile for convenience
+            Tile *currentTile = &tileSet[i][j];
+
+            //set size of the tile using property tileSize of the board
+            currentTile.setSize(tileSize);
 
             //set default image interface for the whole board (code 6)
-            tileSet[j][k].updateStatus(6); //code 6: "unchecked"
+            currentTile.updateStatus(6); //code 6: "unchecked"
 
             //set position of each tile that form a 2d grid board
             //each tile position will increase by the size of 1 tile for every iteration
-            tileSet[j][k].setGeometry(tileSize+tileSize*j,  //move the next tile horizontally
+            currentTile.setGeometry(tileSize+tileSize*j,  //move the next tile horizontally
                                       tileSize+tileSize*k,  //move the next tile vertically
                                       tileSize,tileSize);   //indicate the size of the tile
         }
     }
+
+//    // free dynamically allocated memory
+//    for( int i = 0 ; i < row ; ++i )
+//    {
+//        delete [] tileSet[i] ;
+//    }
+//    delete [] tileSet ;
 
     return true;
 }
