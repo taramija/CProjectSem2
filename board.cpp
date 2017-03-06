@@ -44,39 +44,6 @@ void Tile::mouseEvent(QMouseEvent* e){ // Assign action for mouse click events
     }
 }
 
-
-//Tile::Tile(QWidget* parent) : QLabel(parent) {
-//    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
-//}
-//bool Tile :: event(QEvent *myEvent){
-//    switch(myEvent->type()){
-//        case(QEvent :: MouseButtonRelease):{   // Left click event
-//            qDebug() << "Left Mouse Event";
-//            emit leftClick();
-//            break;
-//        }
-//        case(QEvent :: MouseButtonRelease):{   // Right click event
-//            qDebug() << "Right Mouse Event";
-//            emit rightClick();
-//            break;
-//        }
-//    }
-//    return QWidget::event(myEvent);
-//}
-
-//void Tile  :: slotLeftClick(){   // Implementation of Slot which will consume signal
-//    qDebug() << "Left clicked!";
-//    if(hasBomb){
-//        this->updateStatus(2);
-//    }
-//}
-
-//void Tile  :: slotRightClick(){   // Implementation of Slot which will consume signal
-//    qDebug() << "Right clicked!";
-//    if(hasFlag){this->updateStatus(6);hasFlag=false;return;}  //set flag
-//    if(!hasFlag){this->updateStatus(5);hasFlag=true;return;} //unset flag
-//}
-
 //Board function
 bool Board::setUpBoard(){
 
@@ -99,9 +66,9 @@ bool Board::setUpBoard(){
 
             //set position of each tile that form a 2d grid board
             //each tile position will increase by the size of 1 tile for every iteration
-            currentTile.setGeometry(tileSize+tileSize*j,  //move the next tile horizontally
-                                      tileSize+tileSize*k,  //move the next tile vertically
-                                      tileSize,tileSize);   //indicate the size of the tile
+            currentTile.setGeometry(tileSize+tileSize*j,  //move the tile to the left by 1 tile size
+                                      tileSize+tileSize*k,  //move the tile down by 1 tile size
+                                      tileSize,tileSize);   //indicate the size of the tile in pixel
         }
     }
 
@@ -122,7 +89,10 @@ bool Board::setUpBomb(int numOfBomb){
 
         int randomPosX, randomPosY;
 
-        srand( time(0));
+        srand( time(0));    // I used this code from the inter net
+                            // because at first attempt I always get the same random number
+                            // no matter how many time I tried to generate it
+                            // still don't know why it occured this issue
         randomPosX = rand() % row; // Random row position
         randomPosY = rand() % col; // Random col position
 
@@ -167,4 +137,38 @@ void Board::slotTileClick(){
     }
 
 }
+
+
+
+//Tile::Tile(QWidget* parent) : QLabel(parent) {
+//    connect(this, SIGNAL(leftClick()), this, SLOT(slotTileClick()));
+//}
+//bool Tile :: event(QEvent *myEvent){
+//    switch(myEvent->type()){
+//        case(QEvent :: MouseButtonRelease):{   // Left click event
+//            qDebug() << "Left Mouse Event";
+//            emit leftClick();
+//            break;
+//        }
+//        case(QEvent :: MouseButtonRelease):{   // Right click event
+//            qDebug() << "Right Mouse Event";
+//            emit rightClick();
+//            break;
+//        }
+//    }
+//    return QWidget::event(myEvent);
+//}
+
+//void Tile  :: slotLeftClick(){   // Implementation of Slot which will consume signal
+//    qDebug() << "Left clicked!";
+//    if(hasBomb){
+//        this->updateStatus(2);
+//    }
+//}
+
+//void Tile  :: slotRightClick(){   // Implementation of Slot which will consume signal
+//    qDebug() << "Right clicked!";
+//    if(hasFlag){this->updateStatus(6);hasFlag=false;return;}  //set flag
+//    if(!hasFlag){this->updateStatus(5);hasFlag=true;return;} //unset flag
+//}
 

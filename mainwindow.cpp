@@ -12,9 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //    imageLabel->setPixmap(QPixmap::fromImage(image));
 
     Board board(10,10);
-    board.setUpBoard();
+    board.setUpBoard(); // I encountered an error here
 //    board.setUpBomb(10);
 
+// set the signal-slot connection between tiles and board
 //    for(int i=0; i<board.getRow(); ++i){
 //        for(int j=0; j<board.getCol(); ++j){
 //            Tile tile = board.tileSet[i][j];

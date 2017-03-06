@@ -32,10 +32,10 @@ class Tile : public QLabel
 
         //functions
         void updateStatus(int);     //change the image of the tile base on list of code below
-        void mouseEvent(QMouseEvent* e);
+        void mouseEvent(QMouseEvent* e);    //handle mouse click events
 
     signals:
-        void leftClick();       // left click signal
+        void leftClick();       // left click signal (when the bomb is triggerd to reveal the board)
 
     protected:
         int size;
@@ -74,7 +74,7 @@ class Tile : public QLabel
 
             //mutators
             void setRow(int row){ row = row; }
-            void setCol(int col){ row = col; }
+            void setCol(int col){ col = col; }
 
             //accessors
             int getRow() const { return row; }
