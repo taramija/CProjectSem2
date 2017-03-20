@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "board.h"
+#include "stdlib.h"
+#include <iostream>
+#include <QDebug>
+#include <QPainter>
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,20 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
 //    QImage image("comando.jpg");
 //    imageLabel->setPixmap(QPixmap::fromImage(image));
 
-    Board board(10,10);
-    board.setUpBoard(); // I encountered an error here
-//    board.setUpBomb(10);
-
-// set the signal-slot connection between tiles and board
-//    for(int i=0; i<board.getRow(); ++i){
-//        for(int j=0; j<board.getCol(); ++j){
-//            Tile tile = board.tileSet[i][j];
-
-//            QObject::connect(&tile, SIGNAL(leftClick()),&board, SLOT(slotTileClick()));
-//        }
-//    }
-
-
 }
 
 MainWindow::~MainWindow()
@@ -34,6 +25,34 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent*e)
 {
+    QPainter painter(this);
 
+}
 
+void MainWindow::on_newBtn_clicked()
+{
+    Board board(10,10);
+    board.setUpBoard();
+    board.setUpBomb(10);
+
+// set the signal-slot connection between tiles and board
+    for(int i=0; i<board.getRow(); ++i){
+        for(int j=0; j<board.getCol(); ++j){
+//            Tile** tileSet = **board.getTileSet();
+
+//            for(int i = 0; i < row; ++i)
+//                tileSet[i] = **board.getTileSet();
+
+//            Tile = board.getTileSet();
+//            qDebug() << tileSet;
+//            cout << **tileSet;
+//            Tile tile = *(*(tileSet+j) + i);
+
+            Tile tile = *(*(board.getTileSet()+j)+i);
+
+            QObject::connect(&tile, SIGNAL(leftClick()),&board, SLOT(slotTileClick()));
+
+            update();
+        }
+    }
 }

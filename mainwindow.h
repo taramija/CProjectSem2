@@ -16,6 +16,10 @@ public:
     ~MainWindow();
     void paintEvent(QPaintEvent*);
 
+
+private slots:
+    void on_newBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

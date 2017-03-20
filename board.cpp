@@ -1,7 +1,7 @@
 #include "board.h"
 #include <iostream>
 #include <ctime>    //some comment
-#include <stdlib.h>
+#include "stdlib.h"
 #include <QDebug>
 #include <QMouseEvent>
 using namespace std;
@@ -56,17 +56,17 @@ bool Board::setUpBoard(){
     for(int j = 0; j < row; ++j){
         for(int k = 0; k < col; ++k){
             //use pointer to locate the current tile for convenience
-            Tile *currentTile = &tileSet[i][j];
+            Tile *currentTile = &tileSet[j][k];
 
             //set size of the tile using property tileSize of the board
-            currentTile.setSize(tileSize);
+            currentTile->setSize(tileSize);
 
             //set default image interface for the whole board (code 6)
-            currentTile.updateStatus(6); //code 6: "unchecked"
+            currentTile->updateStatus(6); //code 6: "unchecked"
 
             //set position of each tile that form a 2d grid board
             //each tile position will increase by the size of 1 tile for every iteration
-            currentTile.setGeometry(tileSize+tileSize*j,  //move the tile to the left by 1 tile size
+            currentTile->setGeometry(tileSize+tileSize*j,  //move the tile to the left by 1 tile size
                                       tileSize+tileSize*k,  //move the tile down by 1 tile size
                                       tileSize,tileSize);   //indicate the size of the tile in pixel
         }
