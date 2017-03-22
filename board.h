@@ -1,9 +1,13 @@
-#include <QObject>
-#include <QLabel>
-
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <QObject>
+#include <QLabel>
+#include <QMainWindow>
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+class MainWindow;
 
 //Class Tile
 class Tile : public QLabel
@@ -12,7 +16,7 @@ class Tile : public QLabel
 
     public:
         //constructor
-        Tile(){
+        Tile(MainWindow* parent=0):QLabel(parent){
             bomb = "D://CProject/MineSweeper/images/bomb.png";             //code 1
             boom = "D://CProject/MineSweeper/images/boom.png";             //code 2
             checked = "D://CProject/MineSweeper/images/checked.png";       //code 3
@@ -26,7 +30,7 @@ class Tile : public QLabel
         //destructor
         ~Tile(){}
         //copy instance
-        Tile( const Tile& other ):QLabel(){
+        Tile( const Tile& other, MainWindow* parent=0):QLabel(parent){
             setSize(other.checkFlag());
             setBomb(other.checkBomb());
             setTriggerState(other.checkBombTrigger());
@@ -54,6 +58,7 @@ class Tile : public QLabel
         void setCurrentState(const char* newCurrentState){ currentState = newCurrentState; }
 
         //accessors
+        int getSize() const { return size; }
         bool checkBomb() const { return hasBomb; }
         bool checkFlag() const { return hasFlag; }
         bool checkBombTrigger() const { return bombTriggered; }

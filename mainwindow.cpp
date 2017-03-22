@@ -13,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+//    label->setGeometry(5+5*i,
+//                       5+5*j,
+//                       5,5);
+
 //    QImage image("comando.jpg");
 //    imageLabel->setPixmap(QPixmap::fromImage(image));
 
@@ -25,7 +29,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent*e)
 {
-    QPainter painter(this);
+    //QPainter painter(this);
 
 }
 
@@ -48,11 +52,13 @@ void MainWindow::on_newBtn_clicked()
 //            cout << **tileSet;
 //            Tile tile = *(*(tileSet+j) + i);
 
-            Tile tile = *(*(board.getTileSet()+j)+i);
 
-            QObject::connect(&tile, SIGNAL(leftClick()),&board, SLOT(slotTileClick()));
 
-            update();
+//            Tile tile = *(*(board.getTileSet()+j)+i);
+
+//            QObject::connect(&tile, SIGNAL(leftClick()),&board, SLOT(slotTileClick()));
+
+//            update();
         }
     }
 }

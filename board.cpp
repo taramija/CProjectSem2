@@ -1,3 +1,5 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "board.h"
 #include <iostream>
 #include <ctime>    //some comment
@@ -5,6 +7,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 using namespace std;
+
+class MainWindow;
 
 //Tile function
 void Tile :: updateStatus(int statusCode){  //add picture using pixmap to the tile
@@ -56,13 +60,22 @@ bool Board::setUpBoard(){
     for(int j = 0; j < row; ++j){
         for(int k = 0; k < col; ++k){
             //use pointer to locate the current tile for convenience
-            Tile *currentTile = &tileSet[j][k];
+            Tile* currentTile = &tileSet[j][k];
 
             //set size of the tile using property tileSize of the board
             currentTile->setSize(tileSize);
 
             //set default image interface for the whole board (code 6)
             currentTile->updateStatus(6); //code 6: "unchecked"
+            currentTile->setText("123");
+
+            qDebug() << currentTile->text();
+
+//            QLabel *label = new QLabel();
+//            label->setText("123");
+//            label->setGeometry(tileSize+tileSize*j,
+//                               tileSize+tileSize*k,
+//                               tileSize,tileSize);
 
             //set position of each tile that form a 2d grid board
             //each tile position will increase by the size of 1 tile for every iteration
